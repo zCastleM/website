@@ -138,18 +138,16 @@ const NewNavbar = () => {
                   <DropdownMenuItem key={item.title} asChild>
                     <Link
                       href={item.href}
-                      className="w-full cursor-pointer"
+                      className="w-full"
                       onClick={() => setIsOpen(false)}
                     >
                       {item.title}
                     </Link>
                   </DropdownMenuItem>
                 ))}
-                <DropdownMenuItem asChild>
-                  <div className="w-full p-2">
-                    <CollaborateButton className="w-full" />
-                  </div>
-                </DropdownMenuItem>
+                <div className="px-2 pt-2">
+                  <CollaborateButton className="w-full" />
+                </div>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
