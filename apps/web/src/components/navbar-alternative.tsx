@@ -2,12 +2,6 @@
 import Logo from "@/assets/logo/logo";
 import { Button } from "@workspace/ui/components/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu";
-import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
@@ -19,27 +13,38 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import type { NavigationData } from "@/types";
 
-export type NavigationSection = {
+type NavigationSection = {
   title: string;
   href: string;
 };
 
-const CollaborateButton = ({ className }: { className?: string }) => (
-  <Button className={className} size="lg" variant="default">
+const CollaborateButton = ({
+  className,
+  onClick,
+}: {
+  className?: string;
+  onClick?: () => void;
+}) => (
+  <Button
+    className={className}
+    onClick={onClick || (() => console.log("Collaborate clicked"))}
+    size="lg"
+    variant="default"
+  >
     <Icon icon="mdi:handshake" className="mr-2 size-5" />
     Collaborate
   </Button>
 );
 
-const Navbar = ({
+export function Navbar({
   navbarData: initialNavbarData,
   settingsData: initialSettingsData,
-}: NavigationData) => {
+}: NavigationData) {
   const [sticky, setSticky] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  const { columns } = initialNavbarData || {};
-  const { logo, siteTitle } = initialSettingsData || {};
+  const { columns = null } = initialNavbarData || {};
+  const { logo = null, siteTitle = null } = initialSettingsData || {};
 
   // Convert Sanity columns to navigation sections
   const navigationData: NavigationSection[] =
@@ -58,15 +63,38 @@ const Navbar = ({
     if (window.innerWidth >= 768) setIsOpen(false);
   }, []);
 
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        setIsOpen(false);
+      }
+    },
+    [isOpen]
+  );
+
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
+    // Throttle scroll handler to improve performance
+    let ticking = false;
+    const throttledScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", throttledScroll);
     window.addEventListener("resize", handleResize);
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", throttledScroll);
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [handleScroll, handleResize]);
+  }, [handleScroll, handleResize, handleKeyDown]);
 
   return (
     <header
@@ -119,6 +147,8 @@ const Navbar = ({
           {/* Mobile Menu Button */}
           <div className="flex items-center md:hidden">
             <Button
+              aria-expanded={isOpen}
+              aria-label={isOpen ? "Close menu" : "Open menu"}
               onClick={() => setIsOpen(!isOpen)}
               size="icon"
               variant="ghost"
@@ -133,14 +163,19 @@ const Navbar = ({
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="border-t bg-background py-4 md:hidden">
-            <nav className="flex flex-col gap-2">
+          <div
+            className="border-t bg-background py-4 md:hidden"
+            role="navigation"
+            aria-label="Mobile navigation"
+          >
+            <nav className="flex flex-col gap-2" role="menu">
               {navigationData.map((section, index) => (
                 <Link
                   key={`mobile-${section.title}-${index}`}
                   className="rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
                   href={section.href}
                   onClick={() => setIsOpen(false)}
+                  role="menuitem"
                 >
                   {section.title}
                 </Link>
@@ -154,6 +189,4 @@ const Navbar = ({
       </div>
     </header>
   );
-};
-
-export default Navbar;
+}

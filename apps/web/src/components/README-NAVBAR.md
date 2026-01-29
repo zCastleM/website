@@ -17,7 +17,7 @@ To use this navbar instead of the default one, update your layout file:
 
 ```tsx
 // In src/app/layout.tsx or wherever the navbar is used
-import Navbar from "@/components/navbar-alternative";
+import { Navbar } from "@/components/navbar-alternative";
 
 // Then use it with your Sanity data:
 <Navbar 
@@ -36,9 +36,11 @@ The navbar becomes sticky and adds a backdrop blur effect after scrolling 50px d
 - Mobile: Collapses into a hamburger menu with slide-down navigation
 
 ### Sanity Integration
-The component fetches navigation data from Sanity CMS and supports:
+The component receives navigation data from Sanity CMS via props and supports:
 - Link-type navigation items (direct links)
 - Column-type navigation items (dropdown menus - can be extended)
+
+Data is fetched at the layout/page level and passed to the component.
 
 ### Icons
 Uses @iconify/react for icon support. The collaborate button uses the handshake icon (`mdi:handshake`).
@@ -46,7 +48,7 @@ Uses @iconify/react for icon support. The collaborate button uses the handshake 
 ## Dependencies
 
 - `@iconify/react` - Icon library (added to package.json)
-- `@workspace/ui` - UI components (Button, NavigationMenu, DropdownMenu)
+- `@workspace/ui` - UI components (Button, NavigationMenu)
 - Sanity CMS integration via existing API
 
 ## Customization
