@@ -62,13 +62,7 @@ const mockNavigationData: NavigationData = {
     _type: "settings",
     siteTitle: "Test Website",
     siteDescription: "Testing the alternative navbar component",
-    logo: {
-      id: "test",
-      preview: null,
-      alt: "Test Logo",
-      hotspot: null,
-      crop: null,
-    },
+    logo: null,
     socialLinks: null,
   },
 };

@@ -109,15 +109,13 @@ export function Navbar({
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            {logo && (
-              <Logo
-                alt={siteTitle || ""}
-                height={40}
-                image={logo}
-                priority
-                width={120}
-              />
-            )}
+            <Logo
+              alt={siteTitle || ""}
+              height={40}
+              image={logo}
+              priority
+              width={120}
+            />
           </div>
 
           {/* Desktop Navigation */}
