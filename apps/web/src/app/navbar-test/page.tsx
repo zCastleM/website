@@ -70,7 +70,6 @@ const mockNavigationData: NavigationData = {
       crop: null,
     },
     socialLinks: null,
-    contactEmail: null,
   },
 };
 
